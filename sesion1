@@ -1,31 +1,62 @@
 
-# Base de hechos del cliente
-
-estado_cliente = {
-    "ingresos": 60000,
-    "historial": "Excelente",
-    "deuda_activa": 12000,
-    "tiene_avalista": True
+# 1. BASE DE HECHOS: Estado actual del servidor (Diccionario de métricas)
+servidor_estado = {
+    "cpu_uso": 75,                # Porcentaje de uso de CPU (%)
+    "memoria_libre": 25,          # Porcentaje de memoria RAM libre (%)
+    "ping_respuesta": 45,         # Tiempo de respuesta en milisegundos (ms)
+    "temperatura": 85,            # Temperatura actual en grados Celsius (°C)
+    "ventilador_encendido": False # Estado del sistema de refrigeración (True/False)
 }
 
+# 2 Y 3. MOTOR DE INFERENCIA Y BASE DE REGLAS
+def diagnosticar_servidor(hechos):
+    """
+    Evalúa las métricas del servidor mediante reglas de producción
+    y retorna un estado de salud o alerta.
+    """
+    # REGLA 1: Estado Crítico (Prioridad 1)
+    if hechos["temperatura"] > 80 and not hechos["ventilador_encendido"]:
+        return "CRÍTICO: Sobrecalentamiento inminente. Ventilador apagado y temperatura alta."
+    
+    # REGLA 2: Estado de Advertencia por Rendimiento/Latencia (Prioridad 2)
+    elif hechos["cpu_uso"] > 85 or hechos["memoria_libre"] < 10 or hechos["ping_respuesta"] > 200:
+        return "ADVERTENCIA: Rendimiento degradado (Recursos agotados o latencia alta)."
+    
+    # REGLA 3: Estado Crítico por temperatura aislada (Prioridad 3)
+    elif hechos["temperatura"] > 90:
+        return "CRÍTICO: Temperatura extrema detectada en el procesador."
+        
+    # REGLA 4: Estado Normal (Fallback)
+    else:
+        return "OK: El servidor opera dentro de los parámetros normales."
 
-# MOTOR DE INFERENCIA
-def motor_evaluacion_credito(hechos):
+print("--- EJECUCIÓN DEL SISTEMA EXPERTO IT ---\n")
 
-    # Regla de rechazo por deuda
-    if hechos["deuda_activa"] > 10000 and not hechos["tiene_avalista"]:
-        return "RECHAZADO: Alto riesgo por deuda sin aval."
+# Caso 1: Probar estado Crítico
+print("Caso 1 - Evaluando estado inicial:")
+print("Diagnóstico:", diagnosticar_servidor(servidor_estado))
+print("-" * 50)
 
-    # Regla de aprobación
-    if hechos["ingresos"] > 50000 and hechos["historial"] == "Excelente":
-        return "APROBADO: Cumple criterios Hipotecario Plus."
+# Caso 2: Probar estado de Advertencia (Cambiamos valores del diccionario)
+servidor_estado_2 = {
+    "cpu_uso": 92,
+    "memoria_libre": 5,
+    "ping_respuesta": 30,
+    "temperatura": 60,
+    "ventilador_encendido": True
+}
+print("Caso 2 - Evaluando alto uso de CPU y RAM baja:")
+print("Diagnóstico:", diagnosticar_servidor(servidor_estado_2))
+print("-" * 50)
 
-    # Regla por defecto
-    return "EN REVISIÓN MANUAL: No cumple criterios automáticos."
-
-
-# EJECUCIÓN
-decision = motor_evaluacion_credito(estado_cliente)
-
-print("=== SISTEMA EXPERTO DE CRÉDITO ===")
-print("Veredicto:", decision)
+# Caso 3: Probar estado Normal (Parámetros saludables)
+servidor_estado_3 = {
+    "cpu_uso": 40,
+    "memoria_libre": 60,
+    "ping_respuesta": 20,
+    "temperatura": 55,
+    "ventilador_encendido": True
+}
+print("Caso 3 - Evaluando servidor saludable:")
+print("Diagnóstico:", diagnosticar_servidor(servidor_estado_3))
+print("-" * 50)
