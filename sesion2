@@ -1,1 +1,65 @@
 
+# 1. BASE DE HECHOS INICIALES
+hechos = {
+    "monto_alto": True,
+    "pais_extranjero": True,
+    "fuera_de_horario": True
+}
+
+# 2. BASE DE REGLAS (Mínimo 4 reglas encadenadas)
+reglas = [
+    {
+        "id": "R1",
+        "condiciones": {"monto_alto": True},
+        "conclusion": {"transaccion_inusual": True}
+    },
+    {
+        "id": "R2",
+        "condiciones": {"transaccion_inusual": True, "pais_extranjero": True},
+        "conclusion": {"riesgo_medio": True}
+    },
+    {
+        "id": "R3",
+        "condiciones": {"riesgo_medio": True, "fuera_de_horario": True},
+        "conclusion": {"alerta_critica": True}
+    },
+    {
+        "id": "R4",
+        "condiciones": {"alerta_critica": True},
+        "conclusion": {"bloquear_tarjeta": True}
+    }
+]
+
+# 3. MOTOR DE INFERENCIA (FORWARD CHAINING)
+nuevos_hechos = True
+ciclo = 1
+
+print("--- INICIANDO MOTOR DE INFERENCIA BANCARIO ---\n")
+
+while nuevos_hechos:
+    nuevos_hechos = False
+    print(f"--- Ciclo {ciclo} ---")
+    
+    for regla in reglas:
+        # Verifica si TODAS las condiciones de la regla existen y coinciden en los hechos (Compuerta AND)
+        condiciones_cumplidas = all(hechos.get(k) == v for k, v in regla["condiciones"].items())
+        
+        if condiciones_cumplidas:
+            for clave, valor in regla["conclusion"].items():
+                if clave not in hechos:  # Si es un HECHO NUEVO que no existía en la memoria
+                    hechos[clave] = valor
+                    nuevos_hechos = True  # Dispara un nuevo ciclo para seguir evaluando
+                    print(f"  [DISPARADA {regla['id']}] -> Nuevo hecho deducido: '{clave}' = {valor}")
+    
+    if not nuevos_hechos:
+        print("  (No se dedujeron más hechos. El motor se detiene.)")
+    
+    ciclo += 1
+
+# 4. IMPRESIÓN DEL ESTADO FINAL DE LA MEMORIA
+print("\n" + "=" * 50)
+print("MEMORIA DE TRABAJO FINAL:")
+print("=" * 50)
+for clave, valor in hechos.items():
+    print(f" • {clave}: {valor}")
+print("=" * 50)
