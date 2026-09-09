@@ -1,0 +1,45 @@
+
+# 1. FUNCIÓN DE MEMBRESÍA TRIANGULAR
+def membresia_triangular(x, a, b, c):
+    """
+    Calcula el grado de pertenencia mu(x) en una función triangular.
+    Soporta hombros izquierdos (a == b) para conjuntos iniciales.
+    """
+    if x <= a:
+        return 1.0 if a == b else 0.0
+    elif a < x <= b:
+        return (x - a) / (b - a) if b != a else 1.0
+    elif b < x < c:
+        return (c - x) / (c - b) if c != b else 0.0
+    else:
+        return 0.0
+
+
+# 2. DEFINICIÓN DE CONDUCTORES Y CONJUNTOS DIFUSOS
+conductores_años = [3, 6, 12]
+
+# Definición de vértices (a, b, c) según el manual
+conjuntos = {
+    "Novato": (0, 0, 5),
+    "Intermedio": (2, 5, 8),
+    "Experto": (5, 10, 20)
+}
+
+print("--- EVALUACIÓN DIFUSA DE CONDUCTORES ---\n")
+
+# 3 Y 4. EVALUACIÓN Y CATEGORIZACIÓN
+for años in conductores_años:
+    print(f"Evaluando Conductor con {años} años de experiencia:")
+    
+    grados = {}
+    for categoria, (a, b, c) in conjuntos.items():
+        grado = membresia_triangular(años, a, b, c)
+        grados[categoria] = grado
+        print(f"  • {categoria}: {grado:.2f} ({grado * 100:.1f}%)")
+    
+    # Determinar en qué categoría encaja mejor usando max()
+    mejor_categoria = max(grados, key=grados.get)
+    mayor_grado = grados[mejor_categoria]
+    
+    print(f"  >> RESULTADO: Encaja mejor como '{mejor_categoria}' (Grado de verdad: {mayor_grado:.2f})\n")
+    print("-" * 50)
