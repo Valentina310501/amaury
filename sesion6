@@ -1,0 +1,37 @@
+from sklearn.tree import DecisionTreeClassifier, export_text
+import numpy as np
+
+# 1 y 2. Dataset simulado de Marketing (10 filas, 3 características)
+# Columnas: [Edad, Horas_Online, Compras_Previas]
+X = np.array([
+    [18, 5, 0],   # Ignoró
+    [22, 8, 2],   # Clic
+    [45, 1, 0],   # Ignoró
+    [35, 6, 4],   # Clic
+    [50, 2, 1],   # Ignoró
+    [29, 9, 3],   # Clic
+    [60, 4, 0],   # Ignoró
+    [25, 7, 1],   # Clic
+    [38, 2, 5],   # Clic
+    [19, 1, 0]    # Ignoró
+])
+
+# Etiquetas (Y): [1: Hizo clic, 0: Lo ignoró]
+Y = np.array([0, 1, 0, 1, 0, 1, 0, 1, 1, 0])
+
+# 3. Entrenamiento del DecisionTreeClassifier
+arbol = DecisionTreeClassifier(max_depth=3, random_state=42)
+arbol.fit(X, Y)
+
+# 4. Extracción e impresión de reglas en texto
+nombres_variables = ["Edad", "Horas_Online", "Compras_Previas"]
+reglas_texto = export_text(arbol, feature_names=nombres_variables)
+
+print("Base de Reglas generada automáticamente por la IA:\n")
+print(reglas_texto)
+```[cite: 3]
+
+**5. Discusión Grupal**[cite: 3]
+
+* **¿Tienen sentido comercial?** Sí, el árbol aislará variables clave como `Horas_Online` o `Compras_Previas` para predecir clics, alineándose con el comportamiento real del consumidor digital[cite: 3].
+* **¿Es mejor y más rápido que un humano?** Sí, en cuanto a velocidad, escalabilidad y objetividad estadística sobre miles de registros[cite: 3]. Sin embargo, requiere supervisión humana para validar que las reglas no adopten sesgos o correlaciones espurias[cite: 3].
