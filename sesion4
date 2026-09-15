@@ -1,0 +1,38 @@
+# 1. Definición de grados de membresía
+grados = {
+    "desempeno_pobre": 0.1,
+    "desempeno_promedio": 0.5,
+    "desempeno_excelente": 0.85,
+    "antiguedad_corta": 0.3,
+    "antiguedad_larga": 0.6
+}
+
+# 2 y 3. Motor de Inferencia Mamdani
+def motor_rh(grados):
+    # R1: SI Desempeño es Pobre O Antigüedad es Corta -> Bono Bajo
+    bono_bajo = max(grados["desempeno_pobre"], grados["antiguedad_corta"])
+    
+    # R2: SI Desempeño es Promedio -> Bono Medio
+    bono_medio = grados["desempeno_promedio"]
+    
+    # R3: SI Desempeño es Excelente Y Antigüedad es Larga -> Bono Alto
+    bono_alto = min(grados["desempeno_excelente"], grados["antiguedad_larga"])
+    
+    return {
+        "Bono Bajo": bono_bajo,
+        "Bono Medio": bono_medio,
+        "Bono Alto": bono_alto
+    }
+
+# Ejecución
+resultado = motor_rh(grados)
+print("Activación de conclusiones:", resultado)
+```[cite: 1]
+
+**4. Respuesta teórica y Agregación de Mamdani**[cite: 1]
+
+* **Respuesta:** Dado que la agregación utiliza la T-Conorma ($\text{OR} = \max$), la fuerza final será el valor máximo entre $0.4$ y $0.7$, resultando en **$0.7$**[cite: 1].
+* **Línea de código en Python:**
+  ```python
+  fuerza_final_bono_alto = max(0.4, 0.7)
+  ```[cite: 1]
