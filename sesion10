@@ -1,0 +1,34 @@
+import numpy as np
+from sklearn.svm import SVC
+
+# 1. Dataset original
+X_orig = np.array([[2, 2], [3, 3], [4, 2], [6, 6], [7, 8], [8, 7]])
+Y_orig = np.array([0, 0, 0, 1, 1, 1])
+
+# Modelo Lineal Original
+svm_lineal_orig = SVC(kernel='linear')
+svm_lineal_orig.fit(X_orig, Y_orig)
+print("Vectores de soporte originales:\n", svm_lineal_orig.support_vectors_)
+# Coinciden con el ejercicio analítico: [3, 3] y [6, 6]
+
+# 2. Agregar el punto conflictivo [5, 5] con etiqueta 0
+X_nuevo = np.vstack([X_orig, [5, 5]])
+Y_nuevo = np.append(Y_orig, 0)
+
+# 3. Re-entrenar con Kernel Lineal (falla al separar perfectamente o genera gran error)
+svm_lineal_nuevo = SVC(kernel='linear')
+svm_lineal_nuevo.fit(X_nuevo, Y_nuevo)
+
+# 4. Solución mediante Kernel Trick (RBF)
+svm_rbf = SVC(kernel='rbf', gamma='scale')
+svm_rbf.fit(X_nuevo, Y_nuevo)
+
+# Verificación de predicción del punto conflictivo [5, 5]
+pred_rbf = svm_rbf.predict([[5, 5]])
+print(f"\nPredicción con RBF para [5,5]: Clase {pred_rbf[0]}")
+```[cite: 4]
+
+**5. Reflexión sobre escenarios del mundo real**[cite: 4]
+
+* **Medicina (Detección de Tumores):** Las células cancerígenas suelen estar rodeadas o intercaladas de forma concéntrica en tejido sano[cite: 4]. Un hiperplano lineal trazará un corte recto impreciso, mientras que un kernel RBF puede proyectar el dominio a una dimensión superior para envolver y aislar exactamente el foco tumoral[cite: 4].
+* **Reconocimiento Facial:** Factores como sombras, rotación de la cabeza o la curvatura natural de las facciones generan distribuciones de píxeles no separables linealmente[cite: 4]. El kernel RBF mapea esas variaciones complejas a fronteras curvas de decisión eficaces[cite: 4].
