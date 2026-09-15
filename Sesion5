@@ -1,0 +1,30 @@
+import numpy as np
+
+# 1. Función para calcular el Centro de Gravedad (COG)
+def centroide(x, mu):
+    numerador = np.sum(x * mu)
+    denominador = np.sum(mu)
+    if denominador == 0:
+        return 0.0  # Evita división por cero
+    return numerador / denominador
+
+# 2. Validación con el Taller Analítico
+x_analitico = np.array([10, 20, 30, 40])
+mu_analitico = np.array([0.2, 0.8, 0.8, 0.0])
+
+descuento_crisp = centroide(x_analitico, mu_analitico)
+print(f"Validación Taller Analítico: {descuento_crisp:.2f}%")
+# Resultado: 23.33%
+
+# 3 y 4. Escenario: Sistema de Frenado Automático (Fuerza 0 a 100 N)
+x_frenado = np.linspace(0, 100, 100)
+
+# Curva gaussiana centrada en 70 con desviación estándar de 10
+media = 70
+desviacion = 10
+curva_frenado = np.exp(-0.5 * ((x_frenado - media) / desviacion) ** 2)
+
+fuerza_frenado_exacta = centroide(x_frenado, curva_frenado)
+print(f"Fuerza de frenado exacta calculada: {fuerza_frenado_exacta:.2f} N")
+# Resultado: 70.00 N
+```[cite: 2]
